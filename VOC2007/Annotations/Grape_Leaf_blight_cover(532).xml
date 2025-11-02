@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Grape_leaf_blight_修图后增强</folder>
+	<filename>Grape_Leaf_blight_cover (532).JPG</filename>
+	<path>E:\aaaaa\Grape_leaf_blight_修图后增强\Grape_leaf_blight_修图后增强\Grape_Leaf_blight_cover (532).JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>256</width>
+		<height>256</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>blight</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>21</xmin>
+			<ymin>129</ymin>
+			<xmax>52</xmax>
+			<ymax>147</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>blight</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>191</xmin>
+			<ymin>181</ymin>
+			<xmax>237</xmax>
+			<ymax>205</ymax>
+		</bndbox>
+	</object>
+</annotation>

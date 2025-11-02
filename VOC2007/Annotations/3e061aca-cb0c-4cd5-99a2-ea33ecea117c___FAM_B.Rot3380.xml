@@ -1,0 +1,38 @@
+<annotation>
+	<folder>Grape_Black_rot</folder>
+	<filename>3e061aca-cb0c-4cd5-99a2-ea33ecea117c___FAM_B.Rot 3380.JPG</filename>
+	<path>D:\GoogleDownload\GrapeDeseaseDataset\Grape_Black_rot\3e061aca-cb0c-4cd5-99a2-ea33ecea117c___FAM_B.Rot 3380.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>256</width>
+		<height>256</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>black_rot</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>87</xmin>
+			<ymin>70</ymin>
+			<xmax>141</xmax>
+			<ymax>116</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>black_rot</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>206</xmin>
+			<ymin>133</ymin>
+			<xmax>231</xmax>
+			<ymax>170</ymax>
+		</bndbox>
+	</object>
+</annotation>

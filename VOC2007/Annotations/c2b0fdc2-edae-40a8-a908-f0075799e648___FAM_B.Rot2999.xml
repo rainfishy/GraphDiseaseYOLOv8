@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Grape_Black_rot</folder>
+	<filename>c2b0fdc2-edae-40a8-a908-f0075799e648___FAM_B.Rot 2999.JPG</filename>
+	<path>D:\GoogleDownload\GrapeDeseaseDataset\Grape_Black_rot\c2b0fdc2-edae-40a8-a908-f0075799e648___FAM_B.Rot 2999.JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>256</width>
+		<height>256</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>black_rot</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>149</xmin>
+			<ymin>133</ymin>
+			<xmax>167</xmax>
+			<ymax>149</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>black_rot</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>120</xmin>
+			<ymin>69</ymin>
+			<xmax>130</xmax>
+			<ymax>84</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>black_rot</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>74</xmin>
+			<ymin>54</ymin>
+			<xmax>97</xmax>
+			<ymax>76</ymax>
+		</bndbox>
+	</object>
+</annotation>

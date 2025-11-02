@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Grape_Leaf_blight_select_after</folder>
+	<filename>Grape_Leaf_blight_select (217).JPG</filename>
+	<path>D:\GoogleDownload\GrapeDeseaseDataset\Grape_Leaf_blight_select_after\Grape_Leaf_blight_select (217).JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>256</width>
+		<height>256</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>blight</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>100</xmin>
+			<ymin>68</ymin>
+			<xmax>127</xmax>
+			<ymax>86</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>blight</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>67</xmin>
+			<ymin>92</ymin>
+			<xmax>84</xmax>
+			<ymax>109</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>blight</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>151</xmin>
+			<ymin>147</ymin>
+			<xmax>166</xmax>
+			<ymax>161</ymax>
+		</bndbox>
+	</object>
+</annotation>

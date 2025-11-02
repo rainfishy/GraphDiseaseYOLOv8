@@ -1,0 +1,50 @@
+<annotation>
+	<folder>Grape_Esca_(Black_Measles)</folder>
+	<filename>black_measles	(89).JPG</filename>
+	<path>D:\GoogleDownload\GrapeDeseaseDataset\Grape_Esca_(Black_Measles)\black_measles	(89).JPG</path>
+	<source>
+		<database>Unknown</database>
+	</source>
+	<size>
+		<width>256</width>
+		<height>256</height>
+		<depth>3</depth>
+	</size>
+	<segmented>0</segmented>
+	<object>
+		<name>black_measles</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>145</xmin>
+			<ymin>94</ymin>
+			<xmax>168</xmax>
+			<ymax>132</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>black_measles</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>172</xmin>
+			<ymin>128</ymin>
+			<xmax>195</xmax>
+			<ymax>145</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>black_measles</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<bndbox>
+			<xmin>189</xmin>
+			<ymin>145</ymin>
+			<xmax>226</xmax>
+			<ymax>165</ymax>
+		</bndbox>
+	</object>
+</annotation>

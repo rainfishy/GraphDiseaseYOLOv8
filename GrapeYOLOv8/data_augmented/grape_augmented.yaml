@@ -1,0 +1,10 @@
+names:
+  0: black_rot
+  1: blight
+  2: black_measles
+  3: Healthy
+nc: 4
+path: ../data_augmented
+test: images/test
+train: images/train
+val: images/val
