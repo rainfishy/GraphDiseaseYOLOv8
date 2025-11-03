@@ -16,6 +16,7 @@ from ultralytics.utils.torch_utils import autocast
 from .metrics import bbox_iou, probiou
 from .tal import bbox2dist
 
+from ultralytics.nn.modules.qfl_loss import QualityFocalLoss
 
 class VarifocalLoss(nn.Module):
     """
@@ -196,13 +197,34 @@ class KeypointLoss(nn.Module):
 class v8DetectionLoss:
     """Criterion class for computing training losses for YOLOv8 object detection."""
 
-    def __init__(self, model, tal_topk: int = 10):  # model must be de-paralleled
+    def __init__(self, model, tal_topk: int = 10,use_qfl: bool = False):  # model must be de-paralleled
         """Initialize v8DetectionLoss with model parameters and task-aligned assignment settings."""
         device = next(model.parameters()).device  # get model device
-        h = model.args  # hyperparameters
+
+        # ⭐ 安全获取hyperparameters，如果不存在则使用默认值
+        h = getattr(model, 'args', None)
+        if h is None:
+            from types import SimpleNamespace
+            h = SimpleNamespace(box=7.5, cls=0.5, dfl=1.5)
+        elif isinstance(h, dict):
+            # ⭐ 如果是字典，转换为 SimpleNamespace
+            from types import SimpleNamespace
+            h = SimpleNamespace(
+                box=h.get('box', 7.5),
+                cls=h.get('cls', 0.5),
+                dfl=h.get('dfl', 1.5)
+            )
 
         m = model.model[-1]  # Detect() module
+
         self.bce = nn.BCEWithLogitsLoss(reduction="none")
+
+        # ⭐ 添加QFL支持
+        self.use_qfl = use_qfl
+        if use_qfl:
+            self.qfl = QualityFocalLoss(beta=2.0, reduction='none').to(device)
+            print("✅ 使用 Quality Focal Loss (QFL)")
+
         self.hyp = h
         self.stride = m.stride  # model strides
         self.nc = m.nc  # number of classes
@@ -282,8 +304,17 @@ class v8DetectionLoss:
         target_scores_sum = max(target_scores.sum(), 1)
 
         # Cls loss
-        # loss[1] = self.varifocal_loss(pred_scores, target_scores, target_labels) / target_scores_sum  # VFL way
-        loss[1] = self.bce(pred_scores, target_scores.to(dtype)).sum() / target_scores_sum  # BCE
+        # ⭐ 使用QFL或BCE
+        if self.use_qfl:
+            # 使用Quality Focal Loss
+            loss_qfl = self.qfl(pred_scores, target_scores)  # 返回 [batch_size, num_anchors, num_classes]
+
+            # 手动归约:sum所有loss然后除以target_scores_sum
+            loss[1] = loss_qfl.sum() / target_scores_sum
+        else:
+            # Cls loss
+            # loss[1] = self.varifocal_loss(pred_scores, target_scores, target_labels) / target_scores_sum  # VFL way
+            loss[1] = self.bce(pred_scores, target_scores.to(dtype)).sum() / target_scores_sum  # BCE
 
         # Bbox loss
         if fg_mask.sum():

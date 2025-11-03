@@ -380,7 +380,7 @@ class DetectionModel(BaseModel):
         >>> results = model.predict(image_tensor)
     """
 
-    def __init__(self, cfg="yolo11n.yaml", ch=3, nc=None, verbose=True):
+    def __init__(self, cfg="yolo11n.yaml", ch=3, nc=None, verbose=True, use_qfl=False):
         """
         Initialize the YOLO detection model with the given config and parameters.
 
@@ -391,6 +391,8 @@ class DetectionModel(BaseModel):
             verbose (bool): Whether to display model information.
         """
         super().__init__()
+        self.use_qfl = use_qfl  # ⭐ 新增
+
         self.yaml = cfg if isinstance(cfg, dict) else yaml_model_load(cfg)  # cfg dict
         if self.yaml["backbone"][0][2] == "Silence":
             LOGGER.warning(
@@ -505,7 +507,17 @@ class DetectionModel(BaseModel):
 
     def init_criterion(self):
         """Initialize the loss criterion for the DetectionModel."""
-        return E2EDetectLoss(self) if getattr(self, "end2end", False) else v8DetectionLoss(self)
+        # ⭐ 获取use_qfl参数
+        use_qfl = getattr(self, 'use_qfl', False)
+
+        if use_qfl:
+            print("✅ 模型将使用 Quality Focal Loss (QFL)")
+
+        # ⭐ 传递use_qfl参数给v8DetectionLoss
+        if getattr(self, "end2end", False):
+            return E2EDetectLoss(self)
+        else:
+            return v8DetectionLoss(self, use_qfl=use_qfl)
 
 
 class OBBModel(DetectionModel):
