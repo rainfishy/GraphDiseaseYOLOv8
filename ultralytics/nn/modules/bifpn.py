@@ -27,7 +27,6 @@ class WeightedFeatureFusion(nn.Module):
         self.eps = eps
         # 可学习的权重参数
         self.weights = nn.Parameter(torch.ones(num_inputs, dtype=torch.float32))
-        self.relu = nn.ReLU()
 
     def forward(self, *inputs):
         """
@@ -40,8 +39,9 @@ class WeightedFeatureFusion(nn.Module):
         assert len(inputs) == self.num_inputs, \
             f"Expected {self.num_inputs} inputs, got {len(inputs)}"
 
+        # ⭐ 修复：使用F.relu而不是self.relu，避免in-place操作
         # 确保权重为正
-        weights = self.relu(self.weights)
+        weights = F.relu(self.weights)
         # 归一化权重
         weights = weights / (weights.sum() + self.eps)
 
@@ -54,24 +54,24 @@ class BiFPNLayer(nn.Module):
     """
     简化版BiFPN层
     实现双向特征传递和加权融合
-
-    注意：这是简化版，适合快速集成到YOLOv8
     """
 
     def __init__(self, in_channels, out_channels):
         """
         Args:
-            in_channels: 输入通道数
+            in_channels: 输入通道数（第一个输入）
             out_channels: 输出通道数
         """
         super().__init__()
 
         from .conv import Conv
 
-        # 通道对齐卷积（如果输入输出通道数不同）
-        self.align = None
+        # 为两个输入分别创建通道对齐卷积
+        self.align1 = None
+        self.align2 = None
+
         if in_channels != out_channels:
-            self.align = Conv(in_channels, out_channels, 1)
+            self.align1 = Conv(in_channels, out_channels, 1)
 
         # 特征融合权重
         self.fusion = WeightedFeatureFusion(num_inputs=2)
@@ -79,12 +79,14 @@ class BiFPNLayer(nn.Module):
         # 输出卷积
         self.conv = Conv(out_channels, out_channels, 3)
 
+        self.out_channels = out_channels
+
     def forward(self, x1, x2):
         """
         前向传播
         Args:
             x1: 第一个输入特征
-            x2: 第二个输入特征（需要与x1尺寸匹配）
+            x2: 第二个输入特征
         Returns:
             融合后的特征
         """
@@ -96,9 +98,17 @@ class BiFPNLayer(nn.Module):
                 mode='nearest'
             )
 
-        # 通道对齐
-        if self.align is not None:
-            x1 = self.align(x1)
+        # 通道对齐x1
+        if self.align1 is not None:
+            x1 = self.align1(x1)
+
+        # 通道对齐x2（如果需要）
+        if x2.shape[1] != self.out_channels:
+            # 动态创建align2（如果还没有）
+            if self.align2 is None:
+                from .conv import Conv
+                self.align2 = Conv(x2.shape[1], self.out_channels, 1).to(x2.device)
+            x2 = self.align2(x2)
 
         # 加权融合
         fused = self.fusion(x1, x2)
@@ -114,17 +124,32 @@ if __name__ == "__main__":
     print("Testing BiFPN modules...")
 
     # 测试WeightedFeatureFusion
+    print("\n[测试1] WeightedFeatureFusion")
     fusion = WeightedFeatureFusion(num_inputs=2)
     x1 = torch.randn(1, 64, 80, 80)
     x2 = torch.randn(1, 64, 80, 80)
     out = fusion(x1, x2)
-    print(f"✅ WeightedFeatureFusion: {x1.shape} + {x2.shape} -> {out.shape}")
+    print(f"✅ {x1.shape} + {x2.shape} -> {out.shape}")
+
+    # 测试梯度
+    x1.requires_grad = True
+    x2.requires_grad = True
+    out = fusion(x1, x2)
+    loss = out.sum()
+    loss.backward()
+    print(f"✅ 梯度测试通过")
 
     # 测试BiFPNLayer
+    print("\n[测试2] BiFPNLayer")
     bifpn = BiFPNLayer(in_channels=64, out_channels=128)
-    x1 = torch.randn(1, 64, 80, 80)
-    x2 = torch.randn(1, 64, 40, 40)
+    x1 = torch.randn(1, 64, 80, 80, requires_grad=True)
+    x2 = torch.randn(1, 64, 40, 40, requires_grad=True)
     out = bifpn(x1, x2)
-    print(f"✅ BiFPNLayer: {x1.shape} + {x2.shape} -> {out.shape}")
+    print(f"✅ {x1.shape} + {x2.shape} -> {out.shape}")
 
-    print("\n✅ All tests passed!")
+    # 测试梯度
+    loss = out.sum()
+    loss.backward()
+    print(f"✅ 梯度测试通过")
+
+    print("\n✅ 所有测试通过!")

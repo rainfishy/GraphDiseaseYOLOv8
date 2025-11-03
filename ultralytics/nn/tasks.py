@@ -69,6 +69,8 @@ from ultralytics.nn.modules import (
     YOLOESegment,
     v10Detect,
     SimAM,
+    WeightedFeatureFusion,
+    BiFPNLayer,
 )
 from ultralytics.utils import DEFAULT_CFG_DICT, LOGGER, YAML, colorstr, emojis
 from ultralytics.utils.checks import check_requirements, check_suffix, check_yaml
@@ -178,7 +180,12 @@ class BaseModel(torch.nn.Module):
                 x = y[m.f] if isinstance(m.f, int) else [x if j == -1 else y[j] for j in m.f]  # from earlier layers
             if profile:
                 self._profile_one_layer(m, x, dt)
-            x = m(x)  # run
+            # 处理BiFPNLayer的多输入
+            from ultralytics.nn.modules.bifpn import BiFPNLayer
+            if isinstance(m, BiFPNLayer) and isinstance(x, list):
+                x = m(x[0], x[1])
+            else:
+                x = m(x)  # run
             y.append(x if m.i in self.save else None)  # save output
             if visualize:
                 feature_visualization(x, m.type, m.i, save_dir=visualize)
@@ -1612,6 +1619,8 @@ def parse_model(d, ch, verbose=True):
             C2fCIB,
             A2C2f,
             SimAM,
+            WeightedFeatureFusion,
+            BiFPNLayer,
         }
     )
     repeat_modules = frozenset(  # modules with 'repeat' arguments
@@ -1650,6 +1659,19 @@ def parse_model(d, ch, verbose=True):
         if m.__name__ == "SimAM":
             c2 = ch[f]  # SimAM输出通道数等于输入通道数
             args = []  # SimAM不需要参数
+        elif m is WeightedFeatureFusion:
+            # WeightedFeatureFusion不改变通道数
+            c2 = ch[f] if isinstance(f, int) else ch[f[0]]
+            args = [len(f)] if isinstance(f, list) else [2]
+        elif m is BiFPNLayer:
+            # BiFPNLayer需要两个输入，从f中获取
+            if not isinstance(f, list) or len(f) < 2:
+                raise ValueError(f"BiFPNLayer requires 2 inputs in 'from', got: {f}")
+
+            c1 = ch[f[0]]  # 第一个输入通道数
+            c_out = args[0] if args else c1  # 输出通道数
+            args = [c1, c_out]
+            c2 = c_out
         elif m in base_modules:
             c1, c2 = ch[f], args[0]
             if c2 != nc:  # if c2 not equal to number of classes (i.e. for Classify() output)

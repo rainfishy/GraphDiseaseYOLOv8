@@ -103,6 +103,7 @@ from .transformer import (
 )
 
 from .simam import SimAM
+from .bifpn import WeightedFeatureFusion, BiFPNLayer
 
 __all__ = (
     "AIFI",
@@ -182,4 +183,6 @@ __all__ = (
     "YOLOESegment",
     "v10Detect",
     "SimAM",
+    "WeightedFeatureFusion",
+    "BiFPNLayer",
 )
