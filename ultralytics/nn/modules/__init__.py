@@ -102,6 +102,8 @@ from .transformer import (
     TransformerLayer,
 )
 
+from .simam import SimAM
+
 __all__ = (
     "AIFI",
     "C1",
@@ -179,4 +181,5 @@ __all__ = (
     "YOLOEDetect",
     "YOLOESegment",
     "v10Detect",
+    "SimAM",
 )

@@ -52,7 +52,7 @@ head:
 
         import tempfile
         import os
-git
+
         with tempfile.NamedTemporaryFile(mode='w', suffix='.yaml', delete=False) as f:
             f.write(yaml_content)
             yaml_path = f.name

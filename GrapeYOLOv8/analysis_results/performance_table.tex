@@ -1,0 +1,15 @@
+\begin{table}[htbp]
+\centering
+\caption{YOLOv8n与YOLOv8n+SimAM性能对比}
+\label{tab:performance_comparison}
+\begin{tabular}{lcccccc}
+\toprule
+\textbf{模型} & \textbf{mAP@0.5} & \textbf{mAP@0.5:0.95} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} & \textbf{参数量} \\
+\midrule
+YOLOv8n (Baseline) & 0.8751 & 0.6236 & 0.8358 & 0.8911 & 0.8626 & 3.0M \\
+YOLOv8n + SimAM & 0.8853 & 0.6325 & 0.8325 & 0.8959 & 0.8630 & 3.0M \\
+\midrule
+\textbf{提升} & \textbf{+1.16\%} & \textbf{+1.42\%} & -0.40\% & \textbf{+0.55\%} & +0.05\% & 0 \\
+\bottomrule
+\end{tabular}
+\end{table}
